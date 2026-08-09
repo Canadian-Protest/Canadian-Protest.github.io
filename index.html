@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Record — Canadian Protest Case Files</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161a;
+    --ink-raised:#1b1e24;
+    --paper:#ece7db;
+    --paper-dim:#9a9587;
+    --sash:#b23a2e;
+    --slate:#6f8fae;
+    --gold:#c9a227;
+    --line: rgba(236,231,219,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--sash);color:var(--paper);}
+
+  /* ---- Header / Masthead ---- */
+  header{
+    max-width:920px;
+    margin:0 auto;
+    padding:64px 24px 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin:0 0 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--sash);
+    box-shadow:0 0 0 3px rgba(178,58,46,0.18);
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:clamp(2.1rem,5vw,3.2rem);
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  .tagline{
+    font-family:'Source Serif 4',serif;
+    font-style:italic;
+    color:var(--paper-dim);
+    font-size:1.05rem;
+    margin:0 0 28px;
+  }
+  .about{
+    font-size:0.95rem;
+    color:var(--paper-dim);
+    max-width:60ch;
+  }
+  .about strong{color:var(--paper);font-weight:500;}
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:22px;
+    margin-top:26px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--paper-dim);
+  }
+  .meta-row a{
+    text-decoration:none;
+    border-bottom:1px solid var(--slate);
+    padding-bottom:1px;
+    color:var(--slate);
+  }
+  .meta-row a:hover{color:var(--paper);border-color:var(--paper);}
+
+  /* ---- Index / filter bar ---- */
+  nav.filters{
+    max-width:920px;
+    margin:0 auto;
+    padding:22px 24px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    border-bottom:1px solid var(--line);
+    position:sticky;
+    top:0;
+    background:rgba(20,22,26,0.92);
+    backdrop-filter:blur(6px);
+    z-index:10;
+  }
+  .filter-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    padding:7px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filter-btn:hover{border-color:var(--slate);color:var(--paper);}
+  .filter-btn.active{background:var(--paper);color:var(--ink);border-color:var(--paper);}
+
+  /* ---- Case files ---- */
+  main{max-width:920px;margin:0 auto;padding:36px 24px 100px;}
+
+  .file{
+    border:1px solid var(--line);
+    background:var(--ink-raised);
+    border-radius:6px;
+    margin-bottom:22px;
+    overflow:hidden;
+    transition:border-color .15s ease;
+  }
+  .file:hover{border-color:rgba(236,231,219,0.28);}
+
+  .file-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    padding:22px 24px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .file-ref{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    letter-spacing:0.06em;
+    margin-bottom:8px;
+    display:block;
+  }
+  .file-title{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:1.4rem;
+    margin:0;
+  }
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:3px;
+    border:1.5px solid currentColor;
+    white-space:nowrap;
+    flex-shrink:0;
+    transform:rotate(-1.5deg);
+  }
+  .stamp.active{color:var(--sash);}
+  .stamp.developing{color:var(--gold);}
+  .stamp.archived{color:var(--paper-dim);border-style:dashed;}
+
+  .file-body{padding:18px 24px 24px;}
+  .file-summary{
+    font-size:0.96rem;
+    color:var(--paper-dim);
+    margin:0 0 18px;
+    max-width:68ch;
+  }
+
+  .entries{list-style:none;margin:0;padding:0;}
+  .entries li{
+    display:flex;
+    gap:14px;
+    align-items:baseline;
+    padding:9px 0;
+    border-top:1px solid var(--line);
+    font-size:0.9rem;
+  }
+  .entries li:first-child{border-top:none;}
+  .entry-date{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    flex-shrink:0;
+    width:64px;
+  }
+  .entry-link{
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  .entry-link:hover{border-bottom-color:var(--slate);color:var(--slate);}
+  .entry-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin-left:auto;
+    flex-shrink:0;
+    padding-left:12px;
+  }
+
+  /* ---- Support (quiet, separate from footer) ---- */
+  .support{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .support p{
+    font-size:0.85rem;
+    color:var(--paper-dim);
+    text-align:center;
+    padding:16px 0;
+  }
+  .support a{
+    color:var(--slate);
+    border-bottom:1px solid var(--slate);
+    text-decoration:none;
+  }
+  .support a:hover{color:var(--paper);border-color:var(--paper);}
+
+  /* ---- Embedded posts ---- */
+  .embeds-toggle{
+    margin-top:14px;
+  }
+  .embeds-toggle summary{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--slate);
+    cursor:pointer;
+    list-style:none;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+  }
+  .embeds-toggle summary::-webkit-details-marker{display:none;}
+  .embeds-toggle summary::before{content:"+ ";color:var(--paper-dim);}
+  .embeds-toggle[open] summary::before{content:"− ";}
+  .embeds-toggle summary:hover{color:var(--paper);}
+  .embed-wrap{
+    margin-top:16px;
+    padding:16px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--line);
+    border-radius:6px;
+  }
+  .embed-wrap .twitter-tweet{margin:0 auto !important;}
+
+  /* ---- Footer ---- */
+  footer{
+    max-width:920px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+    border-top:1px solid var(--line);
+    font-size:0.85rem;
+    color:var(--paper-dim);
+  }
+  footer .sign{
+    font-family:'Source Serif 4',serif;
+    font-style:italic;
+    color:var(--paper);
+    margin-top:14px;
+  }
+  footer .emoji{
+    font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+    font-size:1.1rem;
+    margin-top:6px;
+    letter-spacing:0.15em;
+  }
+
+  @media (max-width:600px){
+    .file-head{flex-direction:column;}
+    .entry-tag{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Live case index — updated by hand</p>
+  <h1>The Record</h1>
+  <p class="tagline">Orangutan journalism: receipts first, facts only, no team jersey.</p>
+  <p class="about">
+    This is the standing index for investigations run at <strong>Canadian Protest</strong> (@CanadianPro2) —
+    every active and closed file in one place, so the paper trail doesn't
+    depend on scrolling a timeline or trusting an algorithm to resurface it.
+    Each entry links back to the original sourced thread or document.
+  </p>
+  <div class="meta-row">
+    <a href="https://x.com/CanadianPro2" target="_blank">x.com/CanadianPro2</a>
+    <span>Alberta · Independent Advocate</span>
+  </div>
+</header>
+
+<nav class="filters" id="filters">
+  <button class="filter-btn active" data-filter="all">All Files</button>
+  <button class="filter-btn" data-filter="active">Active</button>
+  <button class="filter-btn" data-filter="developing">Developing</button>
+  <button class="filter-btn" data-filter="archived">Archived</button>
+</nav>
+
+<main id="fileList">
+
+  <article class="file" data-status="active">
+    <div class="file-head">
+      <div>
+        <span class="file-ref">FILE — AISH → ADAP TRANSITION</span>
+        <h3 class="file-title">The disability benefit rollover</h3>
+      </div>
+      <span class="stamp active">Active File</span>
+    </div>
+    <div class="file-body">
+      <p class="file-summary">
+        Tracking Alberta's transition from AISH to ADAP, including the Serco
+        Canada contract, functional capacity assessment changes, and payment
+        failures affecting recipients on rollout. Includes survival guide and
+        complaint templates for recipients.
+      </p>
+      <ul class="entries">
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">ADAP survival guide — what changes and when</a><span class="entry-tag">Thread</span></li>
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Serco Canada's $51M contract, and their UK track record</a><span class="entry-tag">Thread</span></li>
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Functional capacity assessment template</a><span class="entry-tag">Doc</span></li>
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">August payment failures on rollout day</a><span class="entry-tag">Thread</span></li>
+      </ul>
+      <details class="embeds-toggle">
+        <summary>View embedded posts</summary>
+        <div class="embed-wrap">
+          <!-- Paste real "Embed Post" code from X here, one blockquote per post -->
+          <blockquote class="twitter-tweet" data-theme="dark">
+            <p lang="en" dir="ltr">Replace this with the real embed code from X's "Embed Post" menu.</p>&mdash; Canadian Protest (@CanadianPro2)
+          </blockquote>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <article class="file" data-status="active">
+    <div class="file-head">
+      <div>
+        <span class="file-ref">FILE — REF IIR-R4H5Y</span>
+        <h3 class="file-title">Alberta systems credential compromise</h3>
+      </div>
+      <span class="stamp active">Active File</span>
+    </div>
+    <div class="file-body">
+      <p class="file-summary">
+        Multi-year credential compromise affecting Government of Alberta,
+        University of Alberta, and AHS systems. Filed with RCMP, CSIS, CCCS/NC3,
+        and OIPC. Institutional handoff in progress.
+      </p>
+      <ul class="entries">
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Public summary of scope and filings</a><span class="entry-tag">Thread</span></li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="file" data-status="developing">
+    <div class="file-head">
+      <div>
+        <span class="file-ref">FILE — REFERENDUM WATCH</span>
+        <h3 class="file-title">Let's Talk Alberta &amp; the separatist network</h3>
+      </div>
+      <span class="stamp developing">Developing</span>
+    </div>
+    <div class="file-body">
+      <p class="file-summary">
+        Tracking Let's Talk Alberta, Take Back Alberta, the Alberta Priority
+        Party, and the October 19, 2026 referendum, including the
+        Elections Alberta Referendum Third Party Advertiser complaint.
+      </p>
+      <ul class="entries">
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">LTA's gas-discount donation drive</a><span class="entry-tag">Thread</span></li>
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Elections Alberta complaint — RTPA registration</a><span class="entry-tag">Doc</span></li>
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Rebuttal — the separatist economic case</a><span class="entry-tag">Thread</span></li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="file" data-status="archived">
+    <div class="file-head">
+      <div>
+        <span class="file-ref">FILE — CENTURION PROJECT</span>
+        <h3 class="file-title">Voter data breach, 2.9M Albertans</h3>
+      </div>
+      <span class="stamp archived">Archived</span>
+    </div>
+    <div class="file-body">
+      <p class="file-summary">
+        RCMP-confirmed investigation into the Centurion Project voter data
+        breach and its links to the separatist network map.
+      </p>
+      <ul class="entries">
+        <li><span class="entry-date">Edit me</span><a class="entry-link" href="#" target="_blank">Original thread — how the breach happened</a><span class="entry-tag">Thread</span></li>
+      </ul>
+    </div>
+  </article>
+
+</main>
+
+<section class="support">
+  <p>This work is, and always will be, free.<br>
+  If it's useful to you and you'd like to support this effort, feel free to
+  <a href="#" target="_blank">show your love</a>.<br>
+  No tiers, no paywalls — just community.</p>
+</section>
+
+<footer>
+  <p>Every file here is built from public records, sourced documents, and formal
+  filings. Corrections and source challenges are always welcome — reply publicly,
+  not through the mob.</p>
+  <p class="sign">Be well. Be loud. Be love.</p>
+  <p class="emoji">😊🤗💖</p>
+</footer>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const files = document.querySelectorAll('.file');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      files.forEach(file=>{
+        file.style.display = (f==='all' || file.dataset.status===f) ? '' : 'none';
+      });
+    });
+  });
+
+  // Re-render embedded posts whenever a "View embedded posts" panel is opened
+  document.querySelectorAll('.embeds-toggle').forEach(details=>{
+    details.addEventListener('toggle', ()=>{
+      if(details.open && window.twttr && window.twttr.widgets){
+        window.twttr.widgets.load(details);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
